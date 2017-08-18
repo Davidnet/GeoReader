@@ -1,0 +1,6 @@
+The file profiles_settings.xml contains:
+<component name="MarkdownNavigator.ProfileManager">
+  <settings default="" pdf-export="" />
+</component>
+The file my-directory-list.txt contains:
+
