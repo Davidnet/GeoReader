@@ -2,16 +2,26 @@ import obspy
 import argparse
 import os
 import magic
-import tarfile
+import errno
+from pathlib import Path
+import sys
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f','--file-id', dest = 'file_id', type = str)
     parser.add_argument('-s', '--station', dest = 'station', type = str)
-    parser.add_argument('-o', '--output-format', dest = 'output_format', type = str)
-    parser.add_argument('-d','--directory', dest = 'walk_dir', type = str)
+    parser.add_argument('-o', '--output-format', dest = 'output_format', type = str, default = "MSEED")
+    parser.add_argument('-d','--directory', dest = 'walk_dir', type = str, default = '.')
+    parser.add_argument('-od','--output-directory', dest = 'out_dir', type = str, default = str(Path.home()) )
     args = parser.parse_args()
+
+    try:
+        out_path = os.path.join(args.out_dir,'Converted', args.station)
+        os.makedirs(out_path)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            print('Folder found!, please delete before running!')
+            sys.exit()
 
     walk_dir = args.walk_dir
 
@@ -38,12 +48,20 @@ if __name__ == '__main__':
 
                 print('\n type of the file trying to read:' + file_type)
 
+                print('\n filename: ' + filename)
+
                 if file_type == 'data':
-                    st = obspy.read(file_path)
-                    print(st)
-                    stsel = st.select(station=args.station)
-                    print(stsel)
-                    stsel.write(file_path + args.station + "." + args.output_format.lower(), format=args.output_format.upper())
+
+                    try:
+                        name = filename.split('.')[0]
+                        st = obspy.read(file_path)
+                        print(st)
+                        stsel = st.select(station=args.station)
+                        print(stsel)
+                        out_write = os.path.join(out_path, name + '.' + args.output_format.lower())
+                        stsel.write(out_write, format=args.output_format.upper())
+                    except:
+                        pass
 
                 else:
                     continue
