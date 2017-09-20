@@ -9,10 +9,18 @@ import tempfile
 import shutil
 import gzip
 import glob
+import subprocess
 
 
 if __name__ == '__main__':
+    # Parsing and owning hack
+    subprocess.call("./ownership.sh", shell = True)
+    subprocess.call("./usbreader.sh", shell = True)
+    # reading usb disks
+    with open('usbreader.txt','r') as f:
+        first_line = f.readline().strip()
     parser = argparse.ArgumentParser()
+
     parser.add_argument(
         '-s',
         '--station',
@@ -30,7 +38,7 @@ if __name__ == '__main__':
         '--directory',
         dest='walk_dir',
         type=str,
-        default='.')
+        default=first_line)
     parser.add_argument(
         '-od',
         '--output-directory',
@@ -55,15 +63,15 @@ if __name__ == '__main__':
     # broke if do not use abspath
     print('walk_dir (absolute) = ' + os.path.abspath(walk_dir))
     for root, subdirs, files in os.walk(walk_dir):
-        print('--\nDirectory to read = ' + root)
+        # print('--\nDirectory to read = ' + root)
         for subdir in subdirs:
-            print('\t- Subdirectory to read = ' + subdir)
+            # print('\t- Subdirectory to read = ' + subdir)
         for filename in files:
             file_path = os.path.join(root, filename)
-            print('\t- file %s (full path: %s)' % (filename, file_path))
+            # print('\t- file %s (full path: %s)' % (filename, file_path))
             file_type = magic.from_file(file_path)
             print('\n type of the file trying to read:' + file_type)
-            print('\n filename: ' + filename)
+            # print('\n filename: ' + filename)
             with open('trouble_files', 'a') as txt_file:
                 if file_type == 'data':
                     try:
@@ -106,7 +114,7 @@ if __name__ == '__main__':
                                     'file problem with: ' + filename + ' at' + file_path)
                                 pass
                         elif 'tar' in file_type:
-                            print('TAR FILE AVOIDING!')  # TODO: tar file
+                            # print('TAR FILE AVOIDING!')  # TODO: tar file
                     except BaseException:
                         txt_file.write(
                             'file problem with: ' + filename + ' at' + file_path)
