@@ -64,8 +64,8 @@ if __name__ == '__main__':
     print('walk_dir (absolute) = ' + os.path.abspath(walk_dir))
     for root, subdirs, files in os.walk(walk_dir):
         # print('--\nDirectory to read = ' + root)
-        for subdir in subdirs:
-            # print('\t- Subdirectory to read = ' + subdir)
+        for subdir in subdirs: # print('\t- Subdirectory to read = ' + subdir)
+            pass
         for filename in files:
             file_path = os.path.join(root, filename)
             # print('\t- file %s (full path: %s)' % (filename, file_path))
@@ -114,10 +114,11 @@ if __name__ == '__main__':
                                     'file problem with: ' + filename + ' at' + file_path)
                                 pass
                         elif 'tar' in file_type:
+                            pass
                             # print('TAR FILE AVOIDING!')  # TODO: tar file
                     except BaseException:
                         txt_file.write(
-                            'file problem with: ' + filename + ' at' + file_path)
+                        'file problem with: ' + filename + ' at' + file_path)
                         pass
                     else:
                         pass
